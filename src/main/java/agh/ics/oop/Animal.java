@@ -44,5 +44,11 @@ public class Animal {
             case RIGHT -> this.direction = this.direction.next();
         }
     }
+    public Vector2d getVector2d(){
+        return this.coordinates;
+    }
 
+    public MapDirection getDirection() {
+        return direction;
+    }
 }
