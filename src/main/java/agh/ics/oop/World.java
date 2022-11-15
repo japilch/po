@@ -10,18 +10,25 @@ import java.sql.SQLOutput;
 
 public class World {
     public static void main(String args[]){
-        Animal animal1 = new Animal();
-        /*System.out.println(animal1.toString());
+
+        MoveDirection[] directions = new OptionsParser().parse(args);
+        IWorldMap map = new RectangularMap(10, 5);
+        Vector2d[] positions = { new Vector2d(2,2), new Vector2d(3,4) };
+        IEngine engine = new SimulationEngine(directions, map, positions);
+        engine.run();
+
+        /*Animal animal1 = new Animal();
+        System.out.println(animal1.toString());
         animal1.move(MoveDirection.RIGHT);
         animal1.move(MoveDirection.FORWARD);
         animal1.move(MoveDirection.FORWARD);
         animal1.move(MoveDirection.FORWARD);
-        System.out.println(animal1.toString());*/
+        System.out.println(animal1.toString());
         OptionsParser parser1 = new OptionsParser();
         MoveDirection [] controlArray = parser1.parse(args);
         for(MoveDirection processedDirection:controlArray){
             animal1.move(processedDirection);
             System.out.println(animal1.toString());
-        }
+        }*/
     }
 }
