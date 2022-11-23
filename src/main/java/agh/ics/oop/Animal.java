@@ -3,12 +3,43 @@ package agh.ics.oop;
 public class Animal {
     private MapDirection direction;
     private Vector2d coordinates;
+    private IWorldMap mapReference;
     public Animal(){
         this.direction = MapDirection.NORTH;
         this.coordinates = new Vector2d(2,2);
     }
+    //tu zaczalem modyfikowac
+    public Animal(IWorldMap map){
+        mapReference = map;
+        this.direction = MapDirection.NORTH;
+    }
+
+    public Animal(IWorldMap map, Vector2d initialPosition){
+        mapReference = map;
+        this.coordinates = initialPosition;
+        this.direction = MapDirection.NORTH;
+    }
+
+    //tu skonczylem
+
     public String toString(){
-        return "pozycja Zwierzecia: " + coordinates.toString() + ", orientacja zwierzecia: " + direction.toString();
+        //return "pozycja Zwierzecia: " + coordinates.toString() + ", orientacja zwierzecia: " + direction.toString();
+        String result = "";
+        switch (this.direction) {
+            case NORTH -> {
+                result = "^";
+            }
+            case SOUTH -> {
+                result = "v";
+            }
+            case WEST -> {
+                result = "<";
+            }
+            case EAST -> {
+                result = ">";
+            }
+        }
+        return result;
     }
     public boolean isAt(Vector2d position){
         return this.coordinates.equals(position);
@@ -37,7 +68,7 @@ public class Animal {
                 movement = new Vector2d(coordinateX, coordinateY);
                 if(direction == MoveDirection.BACKWARD)
                     movement = movement.opposite();
-                if(coordinates.add(movement).x < 5 && coordinates.add(movement).x > -1 && coordinates.add(movement).y < 5 && coordinates.add(movement).y > -1)
+                if(mapReference.canMoveTo(this.coordinates.add(movement)))
                     this.coordinates = coordinates.add(movement);
             }
             case LEFT -> this.direction = this.direction.previous();

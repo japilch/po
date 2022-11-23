@@ -1,7 +1,7 @@
 import agh.ics.oop.*;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AnimalTest {
     @Test
@@ -64,6 +64,48 @@ public class AnimalTest {
             animal1.move(processedDirection);
 
         assertEquals(animal1.getVector2d(),correctCoordinates);
+    }
+
+    @Test
+    void doesPlaceWorkCorrectly() {
+        IWorldMap map = new RectangularMap(7, 7);
+        Vector2d position;
+        Animal animal1;
+        boolean isPlaced = true;
+        for(int i = 0; i <= 7; i++) {
+            for(int j = 0; j <= 7; j++) {
+                position = new Vector2d(i, j);
+                animal1 = new Animal(map, position);
+                map.place(animal1);
+                isPlaced = (isPlaced && map.isOccupied(position));
+            }
+        }
+        assertTrue(isPlaced);
+    }
+    @Test
+    void doesObjectAtReturnCorrectObject() {
+        IWorldMap map = new RectangularMap(5, 5);
+        Vector2d position;
+        Animal animal1;
+        boolean isPlacedCorrectly = true;
+        for(int i = 0; i <= 5; i++) {
+            for(int j = 0; j <= 5; j++) {
+                position = new Vector2d(i, j);
+                animal1 = new Animal(map, position);
+                map.place(animal1);
+                isPlacedCorrectly = (animal1.equals(map.objectAt(position)));
+            }
+        }
+        assertTrue(isPlacedCorrectly);
+    }
+    @Test
+    void shouldntMoreAnimalsBeInSamePosition() {
+        IWorldMap map = new RectangularMap(5, 5);
+        Vector2d position = new Vector2d(2,2);
+        Animal animal1 = new Animal(map, position);
+        Animal animal2 = new Animal(map, position);
+        map.place(animal1);
+        assertFalse(map.place(animal2));
     }
 
 }
