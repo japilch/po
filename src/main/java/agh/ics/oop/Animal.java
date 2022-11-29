@@ -1,14 +1,19 @@
 package agh.ics.oop;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 public class Animal {
     private MapDirection direction;
     private Vector2d coordinates;
     private IWorldMap mapReference;
+
+    LinkedList<IPositionChangeObserver> observerList = new LinkedList<>();
     public Animal(){
         this.direction = MapDirection.NORTH;
         this.coordinates = new Vector2d(2,2);
     }
-    //tu zaczalem modyfikowac
+
     public Animal(IWorldMap map){
         mapReference = map;
         this.direction = MapDirection.NORTH;
@@ -20,7 +25,7 @@ public class Animal {
         this.direction = MapDirection.NORTH;
     }
 
-    //tu skonczylem
+
 
     public String toString(){
         //return "pozycja Zwierzecia: " + coordinates.toString() + ", orientacja zwierzecia: " + direction.toString();
@@ -81,5 +86,16 @@ public class Animal {
 
     public MapDirection getDirection() {
         return direction;
+    }
+    public void addObserver(IPositionChangeObserver observer) {
+        observerList.add(observer);
+    }
+    public void removeObserver(IPositionChangeObserver observer) {
+        observerList.remove(observer);
+    }
+    public void positionChanged() {
+        for(IPositionChangeObserver observer: observerList) {
+            observer.positionChanged();
+        }
     }
 }
