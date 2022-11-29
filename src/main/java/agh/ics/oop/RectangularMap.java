@@ -21,6 +21,7 @@ public class RectangularMap extends AbstractWorldMap implements IWorldMap {
 
     public boolean place(Animal animal) {
         if(this.canMoveTo(animal.getVector2d())) {
+            animal.addObserver(this);
             animals.put(animal.getVector2d(), animal);
             return true;
         }

@@ -44,6 +44,7 @@ public class GrassField extends AbstractWorldMap implements IWorldMap {
 
     public boolean place(Animal animal) {
         if(canMoveTo(animal.getVector2d())) {
+            animal.addObserver(this);
             animals.put(animal.getVector2d(),animal);
             return true;
         }
@@ -67,7 +68,7 @@ public class GrassField extends AbstractWorldMap implements IWorldMap {
             result = vector.upperRight(result);
         }
         for(Vector2d vector: grassFields.keySet()) {
-            result = vector.lowerLeft(result);
+            result = vector.upperRight(result);
         }
         return result;
     }

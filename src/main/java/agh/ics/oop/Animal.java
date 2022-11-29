@@ -73,8 +73,11 @@ public class Animal {
                 movement = new Vector2d(coordinateX, coordinateY);
                 if(direction == MoveDirection.BACKWARD)
                     movement = movement.opposite();
-                if(mapReference.canMoveTo(this.coordinates.add(movement)))
+                if(mapReference.canMoveTo(this.coordinates.add(movement))) {
+                    this.positionChanged(this.coordinates, this.coordinates.add(movement));
                     this.coordinates = coordinates.add(movement);
+                }
+
             }
             case LEFT -> this.direction = this.direction.previous();
             case RIGHT -> this.direction = this.direction.next();
@@ -93,9 +96,9 @@ public class Animal {
     public void removeObserver(IPositionChangeObserver observer) {
         observerList.remove(observer);
     }
-    public void positionChanged() {
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
         for(IPositionChangeObserver observer: observerList) {
-            observer.positionChanged();
+            observer.positionChanged(oldPosition, newPosition);
         }
     }
 }
