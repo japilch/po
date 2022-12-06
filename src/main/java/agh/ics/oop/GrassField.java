@@ -15,6 +15,8 @@ Do zadania 11: Z racji, ze jedynym wspolnym elementem klas Animal i Grass jest V
 
 public class GrassField extends AbstractWorldMap implements IWorldMap {
     private int numberOfGrassFields;
+    private Vector2d lowerLeftOfGrass = new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    private Vector2d upperRightOfGrass = new Vector2d(Integer.MIN_VALUE, Integer.MIN_VALUE);
 
     private HashMap<Vector2d,Grass> grassFields = new HashMap<>();
 
@@ -28,8 +30,13 @@ public class GrassField extends AbstractWorldMap implements IWorldMap {
                 randomXCoordinate = Math.abs(generator.nextInt())%(int)Math.sqrt((double)10*numberOfGrassFields);
                 randomYCoordinate = Math.abs(generator.nextInt())%(int)Math.sqrt((double)10*numberOfGrassFields);
             } while(grassFields.containsKey(new Vector2d(randomXCoordinate,randomYCoordinate)));
-            grassFields.put(new Vector2d(randomXCoordinate, randomYCoordinate),new Grass(new Vector2d(randomXCoordinate, randomYCoordinate)));
+            Vector2d random = new Vector2d(randomXCoordinate, randomYCoordinate);
+            grassFields.put(random,new Grass(random));
+            lowerLeftOfGrass = lowerLeftOfGrass.lowerLeft(random);
+            upperRightOfGrass = upperRightOfGrass.upperRight(random);
         }
+        boundary.add(lowerLeftOfGrass);
+        boundary.add(upperRightOfGrass);
     }
 
     public Object objectAt(Vector2d position) {
@@ -42,35 +49,23 @@ public class GrassField extends AbstractWorldMap implements IWorldMap {
         return !(this.objectAt(position) instanceof Animal);
     }
 
-    public boolean place(Animal animal) {
+    public void place(Animal animal) {
         if(canMoveTo(animal.getVector2d())) {
             animal.addObserver(this);
+            animal.addObserver(this.boundary);
             animals.put(animal.getVector2d(),animal);
-            return true;
         }
-        return false;
+        else {
+            throw new IllegalArgumentException("Unable to place an animal on field of coordinates "+animal.getVector2d().toString());
+        }
     }
 
     public Vector2d lowerLeft() {
-        Vector2d result = new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for(Vector2d vector: animals.keySet()) {
-            result = vector.lowerLeft(result);
-        }
-        for(Vector2d vector: grassFields.keySet()) {
-            result = vector.lowerLeft(result);
-        }
-        return result;
+        return boundary.lowerLeft();
     }
 
     public Vector2d upperRight() {
-        Vector2d result = new Vector2d(Integer.MIN_VALUE, Integer.MIN_VALUE);
-        for(Vector2d vector: animals.keySet()) {
-            result = vector.upperRight(result);
-        }
-        for(Vector2d vector: grassFields.keySet()) {
-            result = vector.upperRight(result);
-        }
-        return result;
+        return boundary.upperRight();
     }
 
     public IWorldMap returnThis() {

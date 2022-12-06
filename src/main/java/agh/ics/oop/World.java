@@ -6,29 +6,28 @@ b) utworzyć tablicę obiektów klasy Animal i za każdym razem sprawdzać wszys
 
 package agh.ics.oop;
 
+import agh.ics.oop.gui.App;
+import javafx.application.Application;
+
 import java.sql.SQLOutput;
 
 public class World {
     public static void main(String args[]){
 
-        MoveDirection[] directions = new OptionsParser().parse(args);
-        IWorldMap map = new GrassField(6);
-        Vector2d[] positions = { new Vector2d(2,2), new Vector2d(3,4) };
-        IEngine engine = new SimulationEngine(directions, map, positions);
-        engine.run();
+        try {
+            Application.launch(App.class, args);
 
-        /*Animal animal1 = new Animal();
-        System.out.println(animal1.toString());
-        animal1.move(MoveDirection.RIGHT);
-        animal1.move(MoveDirection.FORWARD);
-        animal1.move(MoveDirection.FORWARD);
-        animal1.move(MoveDirection.FORWARD);
-        System.out.println(animal1.toString());
-        OptionsParser parser1 = new OptionsParser();
-        MoveDirection [] controlArray = parser1.parse(args);
-        for(MoveDirection processedDirection:controlArray){
-            animal1.move(processedDirection);
-            System.out.println(animal1.toString());
-        }*/
+            /*MoveDirection[] directions = new OptionsParser().parse(args);
+            IWorldMap map = new GrassField(6);
+            Vector2d[] positions = { new Vector2d(2,2), new Vector2d(3,4) };
+            //Vector2d[] positions = { new Vector2d(2,2), new Vector2d(2,2) };
+            IEngine engine = new SimulationEngine(directions, map, positions);
+            engine.run();*/
+
+        } catch (IllegalArgumentException exception) {
+            System.out.println(exception.getMessage());
+            System.exit(-1);
+        }
+
     }
 }

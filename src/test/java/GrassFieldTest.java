@@ -46,7 +46,11 @@ public class GrassFieldTest {
         Animal animal1 = new Animal(map, position);
         Animal animal2 = new Animal(map, position);
         map.place(animal1);
-        assertFalse(map.place(animal2));
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> {
+            map.place(animal2);
+        });
+        assertTrue(exception.getMessage().contains("Unable to place an animal on field of coordinates "));
+
     }
 
     @Test

@@ -9,7 +9,6 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
     //wydaje mi sie, ze przeniesienie tutaj listy animals nie ma sensu "ideowo", bo wiekszy sens "ideowo" mialoby dziedziczenie GrassField po RectangularMap
     //aczkolwiek przenioslem ja tutaj, aby spelnic polecenie "Dodaj klasę abstrakcyjną AbstractWorldMap, która zawiera kod wspólny dla tych klas."
     protected HashMap<Vector2d, Animal> animals = new HashMap<Vector2d, Animal>();
-    protected IPositionChangeObserver observer;
 
     public Object objectAt(Vector2d position) {
         return animals.get(position);
@@ -22,6 +21,7 @@ public abstract class AbstractWorldMap implements IPositionChangeObserver {
     public abstract Vector2d upperRight();
 
     public abstract IWorldMap returnThis();
+    protected MapBoundary boundary = new MapBoundary();
 
     public String toString() {
         MapVisualizer visualizer = new MapVisualizer(returnThis());
