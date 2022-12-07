@@ -1,5 +1,6 @@
 package agh.ics.oop;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,49 +16,26 @@ Do zadania 11: Z racji, ze jedynym wspolnym elementem klas Animal i Grass jest V
 public class GrassField extends AbstractWorldMap implements IWorldMap {
     private int numberOfGrassFields;
 
-    private List<Grass> grassFields = new ArrayList<>();
+    private HashMap<Vector2d,Grass> grassFields = new HashMap<>();
 
     public GrassField(int numberOfGrassFields) {
         this.numberOfGrassFields = numberOfGrassFields;
         Random generator = new Random();
         for(int i = 0; i < numberOfGrassFields; i++) {
-            Boolean isXCoordinateDistinct;
-            Boolean isYCoordinateDistinct;
             int randomXCoordinate;
             int randomYCoordinate;
             do {
-                isXCoordinateDistinct = true;
                 randomXCoordinate = Math.abs(generator.nextInt())%(int)Math.sqrt((double)10*numberOfGrassFields);
-                for(Grass iter: grassFields) {
-                    if(iter.getPosition().getX()==randomXCoordinate) {
-                        isXCoordinateDistinct = false;
-                        break;
-                    }
-                }
-            } while(!isXCoordinateDistinct);
-            do {
-                isYCoordinateDistinct = true;
                 randomYCoordinate = Math.abs(generator.nextInt())%(int)Math.sqrt((double)10*numberOfGrassFields);
-                for(Grass iter: grassFields) {
-                    if(iter.getPosition().getY()==randomYCoordinate) {
-                        isYCoordinateDistinct = false;
-                        break;
-                    }
-                }
-            } while(!isYCoordinateDistinct);
-            grassFields.add(new Grass(new Vector2d(randomXCoordinate, randomYCoordinate)));
+            } while(grassFields.containsKey(new Vector2d(randomXCoordinate,randomYCoordinate)));
+            grassFields.put(new Vector2d(randomXCoordinate, randomYCoordinate),new Grass(new Vector2d(randomXCoordinate, randomYCoordinate)));
         }
     }
 
     public Object objectAt(Vector2d position) {
         if(super.objectAt(position) != null)
             return super.objectAt(position);
-        for(Grass iter: grassFields) {
-            if(position.equals(iter.getPosition())) {
-                return iter;
-            }
-        }
-        return null;
+        return grassFields.get(position);
     }
 
     public boolean canMoveTo(Vector2d position) {
@@ -66,7 +44,8 @@ public class GrassField extends AbstractWorldMap implements IWorldMap {
 
     public boolean place(Animal animal) {
         if(canMoveTo(animal.getVector2d())) {
-            animals.add(animal);
+            animal.addObserver(this);
+            animals.put(animal.getVector2d(),animal);
             return true;
         }
         return false;
@@ -74,22 +53,22 @@ public class GrassField extends AbstractWorldMap implements IWorldMap {
 
     public Vector2d lowerLeft() {
         Vector2d result = new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for(Animal iter: animals) {
-            result = iter.getVector2d().lowerLeft(result);
+        for(Vector2d vector: animals.keySet()) {
+            result = vector.lowerLeft(result);
         }
-        for(Grass iter: grassFields) {
-            result = iter.getPosition().lowerLeft(result);
+        for(Vector2d vector: grassFields.keySet()) {
+            result = vector.lowerLeft(result);
         }
         return result;
     }
 
     public Vector2d upperRight() {
         Vector2d result = new Vector2d(Integer.MIN_VALUE, Integer.MIN_VALUE);
-        for(Animal iter: animals) {
-            result = iter.getVector2d().upperRight(result);
+        for(Vector2d vector: animals.keySet()) {
+            result = vector.upperRight(result);
         }
-        for(Grass iter: grassFields) {
-            result = iter.getPosition().upperRight(result);
+        for(Vector2d vector: grassFields.keySet()) {
+            result = vector.upperRight(result);
         }
         return result;
     }

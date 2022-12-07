@@ -1,6 +1,7 @@
 package agh.ics.oop;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class RectangularMap extends AbstractWorldMap implements IWorldMap {
     private int width;
@@ -20,7 +21,8 @@ public class RectangularMap extends AbstractWorldMap implements IWorldMap {
 
     public boolean place(Animal animal) {
         if(this.canMoveTo(animal.getVector2d())) {
-            animals.add(animal);
+            animal.addObserver(this);
+            animals.put(animal.getVector2d(), animal);
             return true;
         }
         return false;
