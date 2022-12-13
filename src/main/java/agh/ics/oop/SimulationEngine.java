@@ -1,21 +1,27 @@
 package agh.ics.oop;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-public class SimulationEngine implements IEngine {
+public class SimulationEngine implements IEngine, Runnable {
     private MoveDirection directions[];
     private IWorldMap map;
     private Vector2d initialCoordinates[];
 
-    public SimulationEngine(MoveDirection directions[], IWorldMap map, Vector2d initialCoordinates[]) {
+    private LinkedList<AnimalChangeObserver> observerList = new LinkedList<>();
+    private IPositionChangeObserver observer;
+
+    public SimulationEngine(MoveDirection directions[], IWorldMap map, Vector2d initialCoordinates[]/*, IPositionChangeObserver observer*/) {
         this.directions = directions;
         this.map = map;
         this.initialCoordinates = initialCoordinates;
+//        this.observer = observer;
         for(Vector2d initializingVector: initialCoordinates) {
-            map.place(new Animal(this.map, initializingVector));
-
+            Animal animalToPlace = new Animal(this.map, initializingVector);
+//            animalToPlace.addObserver(observer);
+            map.place(animalToPlace);
         }
     }
 
@@ -26,6 +32,18 @@ public class SimulationEngine implements IEngine {
             animalToMove.move(directions[i]);
             initialCoordinates[i% initialCoordinates.length] = animalToMove.getVector2d();
             System.out.println(map.toString());
+            notifyObservers();
+        }
+    }
+    public void addObserver(AnimalChangeObserver observer) {
+        observerList.add(observer);
+    }
+    public void removeObserver(AnimalChangeObserver observer) {
+        observerList.remove(observer);
+    }
+    public void notifyObservers() {
+        for(AnimalChangeObserver observer: observerList) {
+            observer.changeHappened();
         }
     }
 }
