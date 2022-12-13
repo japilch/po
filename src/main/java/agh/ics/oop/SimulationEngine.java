@@ -13,6 +13,10 @@ public class SimulationEngine implements IEngine, Runnable {
     private LinkedList<AnimalChangeObserver> observerList = new LinkedList<>();
     private IPositionChangeObserver observer;
 
+    public void setDirections(MoveDirection[] directions) {
+        this.directions = directions;
+    }
+
     public SimulationEngine(MoveDirection directions[], IWorldMap map, Vector2d initialCoordinates[]/*, IPositionChangeObserver observer*/) {
         this.directions = directions;
         this.map = map;
@@ -21,6 +25,15 @@ public class SimulationEngine implements IEngine, Runnable {
         for(Vector2d initializingVector: initialCoordinates) {
             Animal animalToPlace = new Animal(this.map, initializingVector);
 //            animalToPlace.addObserver(observer);
+            map.place(animalToPlace);
+        }
+    }
+
+    public SimulationEngine(IWorldMap map, Vector2d initialCoordinates[]) {
+        this.map = map;
+        this.initialCoordinates = initialCoordinates;
+        for(Vector2d initializingVector: initialCoordinates) {
+            Animal animalToPlace = new Animal(this.map, initializingVector);
             map.place(animalToPlace);
         }
     }

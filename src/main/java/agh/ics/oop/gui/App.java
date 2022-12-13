@@ -3,13 +3,19 @@ package agh.ics.oop.gui;
 import agh.ics.oop.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 
 import java.util.Vector;
 
@@ -23,16 +29,21 @@ public class App extends Application implements AnimalChangeObserver{
     private Scene scene;
     private Stage primaryStage;
 
+    private VBox vbox;
+    private Button startButton;
+    private TextField textField;
+    private Thread engineThread;
+
     private final int moveDelay = 300;
 
     public void init() {
-        directions = new OptionsParser().parse(getParameters().getRaw().toArray(new String[0]));
+//        directions = new OptionsParser().parse(getParameters().getRaw().toArray(new String[0]));
         map = new GrassField(6);
         positions = new Vector2d[]{new Vector2d(2, 2), new Vector2d(3, 4)};
-        engine = new SimulationEngine(directions, map, positions);
+        engine = new SimulationEngine(map, positions);
         engine.addObserver(this);
-        Thread engineThread = new Thread(engine);
-        engineThread.start();
+        engineThread = new Thread(engine);
+        //engineThread.start();
         gridPane = new GridPane();
     }
 
@@ -77,7 +88,8 @@ public class App extends Application implements AnimalChangeObserver{
 
         gridPane.setGridLinesVisible(true);
 
-        scene.setRoot(gridPane);
+        vbox = new VBox(gridPane, startButton, textField);
+        scene.setRoot(vbox);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -98,7 +110,19 @@ public class App extends Application implements AnimalChangeObserver{
     public void start(Stage primaryStage) {
         primaryStage.show();
         this.primaryStage = primaryStage;
-        scene = new Scene(gridPane, 400, 400);
+        startButton = new Button("Start");
+        textField = new TextField();
+        startButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                directions = new OptionsParser().parse(textField.getText().split("\\s+"));
+                engine.setDirections(directions);
+                engineThread = new Thread(engine);
+                engineThread.start();
+
+            }
+        });
+        vbox = new VBox(gridPane, textField, startButton);
+        scene = new Scene(vbox, 400, 400);
         render();
     }
 }
