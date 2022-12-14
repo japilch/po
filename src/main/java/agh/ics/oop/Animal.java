@@ -8,7 +8,7 @@ public class Animal {
     private Vector2d coordinates;
     private IWorldMap mapReference;
 
-    LinkedList<IPositionChangeObserver> observerList = new LinkedList<>();
+    private LinkedList<IPositionChangeObserver> observerList = new LinkedList<>();
     public Animal(){
         this.direction = MapDirection.NORTH;
         this.coordinates = new Vector2d(2,2);

@@ -19,13 +19,14 @@ public class RectangularMap extends AbstractWorldMap implements IWorldMap {
         return !this.isOccupied(position);
     }
 
-    public boolean place(Animal animal) {
-        if(this.canMoveTo(animal.getVector2d())) {
+    public void place(Animal animal) {
+        if(canMoveTo(animal.getVector2d())) {
             animal.addObserver(this);
             animals.put(animal.getVector2d(), animal);
-            return true;
         }
-        return false;
+        else {
+            throw new IllegalArgumentException("Unable to place an animal on field of coordinates "+animal.getVector2d().toString());
+        }
     }
 
     public Vector2d lowerLeft() {
