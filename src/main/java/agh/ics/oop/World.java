@@ -15,14 +15,8 @@ public class World {
     public static void main(String args[]){
 
         try {
-            Application.launch(App.class, args);
 
-            /*MoveDirection[] directions = new OptionsParser().parse(args);
-            IWorldMap map = new GrassField(6);
-            Vector2d[] positions = { new Vector2d(2,2), new Vector2d(3,4) };
-            //Vector2d[] positions = { new Vector2d(2,2), new Vector2d(2,2) };
-            IEngine engine = new SimulationEngine(directions, map, positions);
-            engine.run();*/
+            Application.launch(App.class, args);
 
         } catch (IllegalArgumentException exception) {
             System.out.println(exception.getMessage());
